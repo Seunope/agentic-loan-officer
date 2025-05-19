@@ -28,8 +28,8 @@ sequenceDiagram
     A1-->>C: Present offer
     C-->>A1: Accept / reject
     A1->>A4: On accept, send offer
-    A4-->>C: Email/SMS confirmation```
-
+    A4-->>C: Email/SMS confirmation
+```
 ### Required Payload (sent from Agent 1 to Agent 2)
 {
   "age": 32,
