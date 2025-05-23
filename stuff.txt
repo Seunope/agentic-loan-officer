@@ -1,0 +1,46 @@
+uv run mcp
+
+//Add to Claude desktop
+uv run mcp install main.py
+
+Alternatively, you can test it with the MCP Inspector:
+uv run mcp dev main.py
+
+
+Add new package
+❯ uv pip install psycopg2-binary
+
+
+Uninstall
+rm -rf .venv
+
+uv venv .venv
+source .venv/bin/activate
+
+uv run mcp
+
+#Installing all dependencies from your pyproject.toml again:
+#uv pip install -e .
+
+
+#poetry env use python3.12
+#poetry env info
+#poetry install
+
+
+
+
+Claude setting. This point cluade to the correct environment
+"Basic MCP Server": {
+  "command": "uv",
+  "args": [
+    "run",
+    "--python",
+    "/Users/mac/Documents/Dev/Python/mcp-server/.venv/bin/python3",
+    "--with",
+    "mcp[cli]",
+    "mcp",
+    "run",
+    "/Users/mac/Documents/Dev/Python/mcp-server/main.py"
+  ]
+}
