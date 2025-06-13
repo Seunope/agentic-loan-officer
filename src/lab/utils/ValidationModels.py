@@ -3,13 +3,13 @@ from typing import Dict, Any
 
 
 
-class LoanRequestValidator(BaseModel):
-    maritalStatus: str = Field(..., description="Marital status of the applicant")
-    gender: str = Field(..., description="Gender of the applicant")
-    state: str = Field(..., description="Location of the applicant (city)")
-    age: int = Field(..., description="Age of the applicant")
-    loanAmount: int = Field(..., description="Requested loan amount")
-    tenorInDays: int = Field(..., description="Loan tenure in days")
+# class LoanRequestValidator(BaseModel):
+#     maritalStatus: str = Field(..., description="Marital status of the applicant")
+#     gender: str = Field(..., description="Gender of the applicant")
+#     location: str = Field(..., description="Location of the applicant (city)")
+#     age: int = Field(..., description="Age of the applicant")
+#     loanAmount: int = Field(..., description="Requested loan amount")
+#     tenure: int = Field(..., description="Loan tenure in days")
 
 
 class LoanApplicationValidator(BaseModel):

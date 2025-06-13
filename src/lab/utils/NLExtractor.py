@@ -60,7 +60,7 @@ class ApplicationExtractor:
             "gender": ["gender", "male", "female", "other", "man", "woman", "nonbinary"],
             "marital_status": ["marital", "single", "married", "divorced", "widowed", "bachelor", "spouse"],
             "location": ["location", "city", "live", "residing", "address", "from", "located", "state"],
-            "amount": ["amount", "loan", "borrow", "dollar", "money", "fund", "price", "cost"],
+            "amount": ["amount", "loan", "borrow", "naira", "money", "fund", "price", "cost"],
             "tenure": ["tenure", "tenor","month", "year", "term", "period", "duration", "time", "repayment"]
         }
 
@@ -72,7 +72,7 @@ class ApplicationExtractor:
     "borno", "cross river", "delta", "ebonyi", "edo", "ekiti", "enugu", 
     "gombe", "imo", "jigawa", "kaduna", "kano", "katsina", "kebbi", "kogi", 
                             "kwara", "lagos", "nasarawa", "niger", "ogun", "ondo", "osun", "oyo", 
-                            "plateau", "rivers", "sokoto", "taraba", "yobe", "zamfara", "fct"],
+                            "plateau", "rivers", "sokoto", "taraba", "yobe", "zamfara", "fct", "abuja"],
             # "location": lambda x: isinstance(x, str) and 2 <= len(x) <= 50,
             "amount": lambda x: isinstance(x, (int, float)) and 0 < x <= 1000000,
             "tenure": lambda x: isinstance(x, (int, float)) and 0 < x <= 120
