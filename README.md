@@ -18,17 +18,17 @@ A multi-agent AI system for processing loan applications in Nigeria, featuring n
 - [License](#license)
 
 ## Overview
-The Agentic Loan Officer is designed to streamline loan application processing for Nigerian users. It uses a multi-agent system where each agent handles a specific task, from collecting user data to sending final loan decisions via email. The system leverages OpenAI for natural language understanding, a fine-tuned model for risk scoring, and SendGrid for email notifications. Users interact through a Gradio-based web interface, providing loan details in natural language, which the system processes and validates.
+The Agentic Loan Officer automates loan application processing for Nigerian users through a multi-agent system. Agents handle tasks from data collection to sending loan decisions via email. The system uses OpenAI, Anthropic, and Google Gemini for AI tasks, a fine-tuned OpenAI model for risk scoring, and SendGrid for email notifications. Users interact via a Gradio-based web interface, providing loan details in natural language.
 
 ## Agent Roles & Workflow
-The system comprises four specialized agents that collaborate to process loan applications:
+The system comprises four agents:
 
 | Agent | Responsibility | Handoff |
 |-------|----------------|---------|
-| **Coordinator (Agent 1)** | Engages with the user via chat, detects loan application intent, collects and validates required fields (`age`, `gender`, `marital_status`, `location`, `amount`, `tenure`). | Passes validated data to **Agent 2** for risk scoring. |
+| **Coordinator (Agent 1)** | Engages users via chat, detects loan application intent, collects and validates fields (`age`, `gender`, `marital_status`, `location`, `amount`, `tenure`). | Passes validated data to **Agent 2**. |
 | **Risk Scorer (Agent 2)** | Uses a fine-tuned OpenAI model to compute a **repayment probability score** (0-99) and risk level (high, medium, acceptable). | Returns results to **Agent 1**. |
-| **Analyst (Agent 3)** | Analyzes Agent 2’s output, providing a detailed loan recommendation (approve, adjust, decline) with explanations. | Sends recommendation back to **Agent 1** for user confirmation. |
-| **Notifier (Agent 4)** | Upon user confirmation, formats and sends a professional email with the loan decision using SendGrid. | Completes the workflow. |
+| **Analyst (Agent 3)** | Analyzes Agent 2’s output, providing a detailed recommendation (approve, adjust, decline). | Sends recommendation to **Agent 1** for confirmation. |
+| **Notifier (Agent 4)** | Upon confirmation, sends a professional email with the loan decision using SendGrid. | Completes the workflow. |
 
 ### Interaction Flow
 ```mermaid
@@ -64,46 +64,41 @@ sequenceDiagram
 ```
 
 ## Features
-- **Natural Language Processing**: Extracts loan application details from user input using spaCy and custom regex patterns.
-- **Data Validation**: Ensures all fields meet requirements (e.g., age 19-70, amount ≤ ₦1,000,000, tenure 7-180 days) using Pydantic.
-- **Risk Assessment**: Generates a repayment probability score (0-99) and risk level (high, medium, acceptable) via a fine-tuned OpenAI model.
-- **Loan Recommendation**: Provides detailed approval/rejection recommendations based on risk analysis.
-- **Email Notifications**: Sends professional HTML emails with loan decisions using SendGrid.
-- **Interactive UI**: Gradio-based web interface for user-friendly interaction.
-- **Modular Design**: Extensible agent-based architecture for easy integration of new features.
+- **Natural Language Processing**: Extracts loan details using spaCy, regex, and word2number.
+- **Data Validation**: Ensures fields meet requirements (e.g., age 19-70, amount ≤ ₦1,000,000).
+- **Risk Assessment**: Generates repayment probability scores via a fine-tuned OpenAI model.
+- **Loan Recommendation**: Provides detailed approval/rejection recommendations.
+- **Email Notifications**: Sends HTML emails via SendGrid.
+- **Interactive UI**: Gradio-based web interface.
+- **Modular Design**: Extensible agent-based architecture.
 
 ## Technical Architecture
 - **Language**: Python 3.12+
 - **Framework**: Gradio for the web interface
 - **AI Models**:
-  - OpenAI `gpt-4o-mini` for coordination and general NLP tasks
-  - Fine-tuned OpenAI model for repayment probability scoring
-  - Gemini (via Google API) for email subject and HTML conversion
+  - OpenAI `gpt-4o-mini` for coordination and NLP
+  - Fine-tuned OpenAI model for risk scoring
+  - Anthropic, Llama 3 and Google Gemini for additional AI tasks
 - **Libraries**:
-  - `openai`: For API interactions with OpenAI and Groq
-  - `sendgrid`: For sending emails
-  - `spacy`: For NLP and entity extraction
-  - `pydantic`: For data validation
-  - `word2number`: For converting text numbers to integers
-  - `aiohttp`: For asynchronous HTTP requests
+  - `openai`, `anthropic`, `google-genai`: AI model interactions
+  - `sendgrid`: Email delivery
+  - `spacy`, `word2number`: NLP
+  - `gradio`: UI
+  - `playwright`, `requests`, `httpx`: Web interactions
 - **Tools**:
-  - `uv`: For dependency and virtual environment management
-  - `pytest`: For unit testing
+  - `uv`: Dependency and environment management
+  - `pytest`: Unit testing
 - **APIs**:
-  - OpenAI API (for NLP and fine-tuned model)
-  - Google Gemini API (for email formatting)
-  - Groq API (for additional model support)
-  - SendGrid API (for email delivery)
+  - OpenAI, Anthropic, Google Gemini, SendGrid
 
 ## Setup Guide
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/seunope/agentic-loan-officer.git
+   git clone https://github.com/yourusername/agentic-loan-officer.git
    cd agentic-loan-officer
    ```
 
 2. **Install `uv`**:
-   Install `uv` if not already present:
    ```bash
    pip install uv
    ```
@@ -115,12 +110,9 @@ sequenceDiagram
    ```
 
 4. **Install Dependencies**:
+   Install project and development dependencies:
    ```bash
-   uv pip sync requirements.txt
-   ```
-   Or, if using `pyproject.toml`:
-   ```bash
-   uv pip install .
+   uv pip install . --group dev
    ```
 
 5. **Configure Environment Variables**:
@@ -131,12 +123,14 @@ sequenceDiagram
    GOOGLE_API_KEY=your_google_key
    GROQ_API_KEY=your_groq_key
    SENDGRID_API_KEY=your_sendgrid_key
+   ANTHROPIC_API_KEY=your_anthropic_key
    ```
    Obtain keys from:
    - [OpenAI](https://platform.openai.com/)
    - [Google Cloud](https://console.cloud.google.com/)
    - [Groq](https://console.groq.com/)
    - [SendGrid](https://app.sendgrid.com/)
+   - [Anthropic](https://console.anthropic.com/)
 
 6. **Download spaCy Model**:
    ```bash
@@ -150,38 +144,37 @@ sequenceDiagram
    ```
 
 2. **Access the Interface**:
-   - A Gradio URL (e.g., `http://127.0.0.1:7860`) will appear in the terminal.
-   - Open it in a browser to start interacting.
+   - Open the Gradio URL (e.g., `http://127.0.0.1:7860`) in a browser.
 
 3. **Alternative Run Command**:
-   If you prefer running directly (less recommended):
+   If running directly:
    ```bash
    uv run python src/main.py
    ```
-   Note: This may require adding `sys.path.append` to `src/main.py` for relative imports (see troubleshooting).
+   Note: May require `sys.path.append` in `src/main.py` for relative imports (see troubleshooting).
 
 ## Usage Guide
 1. **Start a Loan Application**:
-   - In the Gradio chat interface, provide details like: "I'm 30 years old, male, single, living in Lagos, need a loan of 50000 for 60 days."
-   - The Coordinator Agent will extract and validate fields, prompting for missing or invalid data.
+   - Enter details in the Gradio interface: "I'm 30 years old, male, single, living in Lagos, need a loan of 50000 for 60 days."
+   - The Coordinator Agent prompts for missing or invalid data.
 
 2. **Review and Confirm**:
-   - Once all fields are collected, the system presents a summary (e.g., age, gender, amount).
-   - Confirm with words like "yes" or "proceed," or modify with "change" or "edit."
+   - Review the summary of collected fields.
+   - Confirm with "yes" or "proceed," or modify with "change" or "edit."
 
 3. **Receive Decision**:
-   - After confirmation, the system processes the application, generates a risk score, and provides a recommendation.
-   - Enter a valid email address when prompted to receive the final decision via email.
+   - After confirmation, the system processes the application and sends a decision email.
+   - Provide a valid email address when prompted.
 
 4. **Start a New Application**:
-   - Click "Start New Application" in the interface to reset and begin anew.
+   - Click "Start New Application" to reset.
 
 ## Testing
-Run unit tests to verify functionality:
+Run unit tests from the project root:
 ```bash
-uv run pytest tests/
+uv run pytest tests/ -v
 ```
-Tests cover:
+The `-v` flag provides verbose output. Tests cover:
 - Coordinator data collection
 - Risk scorer instructions
 - Recommendation logic
@@ -189,34 +182,85 @@ Tests cover:
 - Data validation
 - NLP extraction
 
+Note: Ensure the project is installed (`uv pip install .`) to make the `src` module available for test imports.
 
+## Project Structure
+```
+agentic-loan-officer/
+├── src/
+│   ├── agents/
+│   │   ├── __init__.py
+│   │   ├── coordinator.py
+│   │   ├── repayment_predictor.py
+│   │   ├── recommendation.py
+│   │   └── emailer.py
+│   ├── models/
+│   │   ├── __init__.py
+│   │   └── validation_models.py
+│   ├── utils/
+│   │   ├── __init__.py
+│   │   ├── agent_prompt.py
+│   │   └── nl_extractor.py
+│   ├── __init__.py
+│   └── main.py
+├── tests/
+│   ├── __init__.py
+│   ├── test_coordinator.py
+│   ├── test_repayment_predictor.py
+│   ├── test_recommendation.py
+│   ├── test_emailer.py
+│   ├── test_validation_models.py
+│   └── test_nl_extractor.py
+├── .env
+├── pyproject.toml
+├── pytest.ini
+├── README.md
+├── setup.py
+```
+
+## Dependencies
+Key dependencies (see `pyproject.toml`):
+- `openai>=1.68.2`
+- `anthropic>=0.49.0`
+- `google-genai>=1.14.0`
+- `gradio>=5.22.0`
+- `sendgrid>=6.11.0`
+- `spacy>=3.7.2`
+- `word2number>=1.1`
+- `pytest>=8.3.3` (dev)
 
 ## Troubleshooting
+- **ModuleNotFoundError: No module named 'src'**:
+  - Run tests from the project root: `uv run pytest tests/`.
+  - Ensure the project is installed: `uv pip install .`.
+  - Add `pytest.ini` with `python_paths = .` (see Setup Guide).
+  - Set `PYTHONPATH`: `export PYTHONPATH=$PYTHONPATH:/path/to/agentic-loan-officer`.
+- **Dependency Group Errors**:
+  - Use `uv pip install . --group dev` instead of `uv pip install ".[dev]"`.
+- **Zsh Globbing Errors**:
+  - For commands like `uv pip install ".[dev]"`, use quotes or escape: `uv pip install .\[dev\]`.
 - **Relative Import Errors**:
-  - Run as a module: `uv run python -m src.main`.
-  - Alternatively, add `sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))` to `src/main.py`.
+  - Use `uv run python -m src.main`.
+  - Or add `sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))` to `src/main.py`.
 - **API Errors**:
-  - Verify API keys in `.env` are valid.
-  - Check API rate limits or permissions (e.g., SendGrid email sending).
+  - Verify API keys in `.env`.
+  - Check rate limits or permissions.
 - **Port Conflicts**:
-  - Change Gradio port: `uv run python -m src.main --server_port 5000`.
+  - Change port: `uv run python -m src.main --server_port 5000`.
 - **Dependency Issues**:
-  - Re-sync: `uv pip sync requirements.txt`.
+  - Re-sync: `uv pip install . --group dev`.
   - Ensure Python ≥3.12: `uv python 3.12`.
 - **NLP Extraction Failures**:
   - Confirm spaCy model: `uv run python -m spacy download en_core_web_sm`.
-- **Syntax Errors**:
-  - Check modified files (e.g., `emailer.py`, `coordinator.py`) for typos.
-  - Run `uv run python -m compileall src/` to catch syntax issues.
 
 ## Contributing
 1. Fork the repository.
 2. Create a feature branch: `git checkout -b feature/your-feature`.
 3. Commit changes: `git commit -m "Add your feature"`.
-4. Push to the branch: `git push origin feature/your-feature`.
+4. Push: `git push origin feature/your-feature`.
 5. Open a pull request.
 
-Please include tests for new features and follow PEP 8 style guidelines.
+Include tests and follow PEP 8 guidelines.
 
 ## License
-MIT License. See `LICENSE` file for details.
+MIT License. See `LICENSE` file.
