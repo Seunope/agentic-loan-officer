@@ -98,7 +98,7 @@ sequenceDiagram
 ## Setup Guide
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/yourusername/agentic-loan-officer.git
+   git clone https://github.com/seunope/agentic-loan-officer.git
    cd agentic-loan-officer
    ```
 
