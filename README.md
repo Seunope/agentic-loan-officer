@@ -11,7 +11,6 @@ A multi-agent AI system for processing loan applications in Nigeria, featuring n
 - [Running the Application](#running-the-application)
 - [Usage Guide](#usage-guide)
 - [Testing](#testing)
-- [Project Structure](#project-structure)
 - [Dependencies](#dependencies)
 - [Troubleshooting](#troubleshooting)
 - [Contributing](#contributing)
@@ -78,7 +77,7 @@ sequenceDiagram
 - **AI Models**:
   - OpenAI `gpt-4o-mini` for coordination and NLP
   - Fine-tuned OpenAI model for risk scoring
-  - Anthropic, Llama 3 and Google Gemini for additional AI tasks
+  - Anthropic, Llama-3.3-70b-versatile and Google Gemini for additional AI tasks
 - **Libraries**:
   - `openai`, `anthropic`, `google-genai`: AI model interactions
   - `sendgrid`: Email delivery
@@ -94,7 +93,7 @@ sequenceDiagram
 ## Setup Guide
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/yourusername/agentic-loan-officer.git
+   git clone https://github.com/seunope/agentic-loan-officer.git
    cd agentic-loan-officer
    ```
 
@@ -155,7 +154,7 @@ sequenceDiagram
 
 ## Usage Guide
 1. **Start a Loan Application**:
-   - Enter details in the Gradio interface: "I'm 30 years old, male, single, living in Lagos, need a loan of 50000 for 60 days."
+   - Enter details in the Gradio interface: "I'm 30 years old, male, single, living in Lagos, need a loan of 50,000 for 60 days."
    - The Coordinator Agent prompts for missing or invalid data.
 
 2. **Review and Confirm**:
@@ -184,50 +183,6 @@ The `-v` flag provides verbose output. Tests cover:
 
 Note: Ensure the project is installed (`uv pip install .`) to make the `src` module available for test imports.
 
-## Project Structure
-```
-agentic-loan-officer/
-├── src/
-│   ├── agents/
-│   │   ├── __init__.py
-│   │   ├── coordinator.py
-│   │   ├── repayment_predictor.py
-│   │   ├── recommendation.py
-│   │   └── emailer.py
-│   ├── models/
-│   │   ├── __init__.py
-│   │   └── validation_models.py
-│   ├── utils/
-│   │   ├── __init__.py
-│   │   ├── agent_prompt.py
-│   │   └── nl_extractor.py
-│   ├── __init__.py
-│   └── main.py
-├── tests/
-│   ├── __init__.py
-│   ├── test_coordinator.py
-│   ├── test_repayment_predictor.py
-│   ├── test_recommendation.py
-│   ├── test_emailer.py
-│   ├── test_validation_models.py
-│   └── test_nl_extractor.py
-├── .env
-├── pyproject.toml
-├── pytest.ini
-├── README.md
-├── setup.py
-```
-
-## Dependencies
-Key dependencies (see `pyproject.toml`):
-- `openai>=1.68.2`
-- `anthropic>=0.49.0`
-- `google-genai>=1.14.0`
-- `gradio>=5.22.0`
-- `sendgrid>=6.11.0`
-- `spacy>=3.7.2`
-- `word2number>=1.1`
-- `pytest>=8.3.3` (dev)
 
 ## Troubleshooting
 - **ModuleNotFoundError: No module named 'src'**:
