@@ -130,10 +130,6 @@ sequenceDiagram
    - [SendGrid](https://app.sendgrid.com/)
    - [Anthropic](https://console.anthropic.com/)
 
-6. **Download spaCy Model**:
-   ```bash
-   uv run python -m spacy download en_core_web_sm
-   ```
 
 ## Running the Application
 1. **Run with `uv`**:
