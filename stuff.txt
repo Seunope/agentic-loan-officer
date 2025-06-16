@@ -1,4 +1,16 @@
 //Run the script as a module to avoid relative import issues:
+conda deactivate
+
+source .venv/bin/activate
+
+uv run python -m src.main 
+
+//if venv was deleted
+rm -rf .venv
+
+uv venv
+
+
 source .venv/bin/activate
 
 uv run python -m src.main 

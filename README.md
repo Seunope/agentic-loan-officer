@@ -11,7 +11,6 @@ A multi-agent AI system for processing loan applications in Nigeria, featuring n
 - [Running the Application](#running-the-application)
 - [Usage Guide](#usage-guide)
 - [Testing](#testing)
-- [Dependencies](#dependencies)
 - [Troubleshooting](#troubleshooting)
 - [Contributing](#contributing)
 - [License](#license)

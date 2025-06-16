@@ -35,13 +35,14 @@ dependencies = [
     "spacy>=3.7.2",
     "word2number>=1.1",
     "python-dateutil>=2.8.2",
-    "numpy>=1.26.0",
+    "numpy>=1.26.0,<1.27.0",
+    "en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.7.1/en_core_web_sm-3.7.1-py3-none-any.whl",
+
 ]
 
 [dependency-groups]
 dev = [
     "ipykernel>=6.29.5",
-    "pytest>=8.3.3",
 ]
 
 [tool.setuptools.package-data]
