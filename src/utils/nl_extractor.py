@@ -61,7 +61,7 @@ class ApplicationExtractor:
             "marital_status": ["marital", "single", "married", "divorced", "widowed", "bachelor", "spouse"],
             "location": ["location", "city", "live", "residing", "address", "from", "located", "state"],
             "amount": ["amount", "loan", "borrow", "naira", "money", "fund", "price", "cost"],
-            "tenure": ["tenure", "tenor","month", "year", "term", "period", "duration", "time", "repayment"]
+            "tenure": ["tenure", "tenor", "month", "year", "term", "period", "duration", "time", "repayment"]
         }
 
         self.validators = {
@@ -69,11 +69,10 @@ class ApplicationExtractor:
             "gender": lambda x: x.lower() in ["male", "female", "other"],
             "marital_status": lambda x: x.lower() in ["single", "married", "divorced", "widowed"],
             "location": lambda x: x.lower() in ["abia", "adamawa", "akwa ibom", "anambra", "bauchi", "bayelsa", "benue", 
-    "borno", "cross river", "delta", "ebonyi", "edo", "ekiti", "enugu", 
-    "gombe", "imo", "jigawa", "kaduna", "kano", "katsina", "kebbi", "kogi", 
-                            "kwara", "lagos", "nasarawa", "niger", "ogun", "ondo", "osun", "oyo", 
-                            "plateau", "rivers", "sokoto", "taraba", "yobe", "zamfara", "fct", "abuja"],
-            # "location": lambda x: isinstance(x, str) and 2 <= len(x) <= 50,
+                "borno", "cross river", "delta", "ebonyi", "edo", "ekiti", "enugu", 
+                "gombe", "imo", "jigawa", "kaduna", "kano", "katsina", "kebbi", "kogi", 
+                "kwara", "lagos", "nasarawa", "niger", "ogun", "ondo", "osun", "oyo", 
+                "plateau", "rivers", "sokoto", "taraba", "yobe", "zamfara", "fct", "abuja"],
             "amount": lambda x: isinstance(x, (int, float)) and 0 < x <= 1000000,
             "tenure": lambda x: isinstance(x, (int, float)) and 0 < x <= 120
         }
@@ -110,10 +109,8 @@ class ApplicationExtractor:
 
         for ent in doc.ents:
             mapped_field = self.entity_map.get(ent.label_)
-
             if mapped_field == field:
                 return ent.text
-
             if isinstance(mapped_field, list) and field in mapped_field:
                 context = doc[max(0, ent.start-3):min(len(doc), ent.end+3)].text.lower()
                 if any(kw in context for kw in self.field_keywords[field]):
@@ -123,20 +120,16 @@ class ApplicationExtractor:
             for ent in doc.ents:
                 if ent.label_ == "GPE":
                     return ent.text
-
         return None
 
     def _extract_with_context(self, field: str, doc) -> Optional[str]:
         field_keywords = self.field_keywords[field]
-
         for i, token in enumerate(doc):
             if token.is_stop or token.is_punct:
                 continue
-
             context_start = max(0, i - 5)
             context_end = min(len(doc), i + 5)
             context = doc[context_start:context_end]
-
             if any(kw in token.text.lower() for kw in field_keywords):
                 for nearby in context:
                     if nearby.like_num or nearby.is_digit:
@@ -148,97 +141,55 @@ class ApplicationExtractor:
                         elif field == "marital_status" and nearby.text.lower() in ["single", "married", "divorced", "widowed"]:
                             return nearby.text
                         elif field == "location" and nearby.text.lower() in ["abia", "adamawa", "akwa ibom", "anambra", "bauchi", "bayelsa", "benue", 
-    "borno", "cross river", "delta", "ebonyi", "edo", "ekiti", "enugu", 
-    "gombe", "imo", "jigawa", "kaduna", "kano", "katsina", "kebbi", "kogi", 
+                            "borno", "cross river", "delta", "ebonyi", "edo", "ekiti", "enugu", 
+                            "gombe", "imo", "jigawa", "kaduna", "kano", "katsina", "kebbi", "kogi", 
                             "kwara", "lagos", "nasarawa", "niger", "ogun", "ondo", "osun", "oyo", 
                             "plateau", "rivers", "sokoto", "taraba", "yobe", "zamfara", "fct"]:
                             return nearby.text
-                        
-
             if field == "location" and i > 0 and doc[i-1].text.lower() == "in" and token.pos_ == "PROPN":
                 return token.text
-
         return None
-    
+
     def extract_all_fields(self, text: str, fields_to_extract: Set[str], current_data: Dict[str, Any] = None) -> Dict[str, Tuple[Any, float]]:
-        """
-        Extract all specified fields from the text.
-        
-        Args:
-            text: The input text to extract from
-            fields_to_extract: Set of field names to extract
-            current_data: Dictionary of already extracted data (to provide context)
-        
-        Returns:
-            Dictionary mapping field names to tuples of (extracted_value, confidence_score)
-        """
         if current_data is None:
             current_data = {}
-            
-        # Clean the text
         text = self._clean_text(text)
-        
-        # Process with spaCy
         doc = self.nlp(text)
-        
         results = {}
-        
-        # Extract each requested field using multiple methods
         for field in fields_to_extract:
             if field not in self.patterns:
                 continue
-                
-            # Try multiple extraction methods
             value = None
             confidence = 0.0
-            
-            # Method 1: Regular expression patterns
             pattern_value = self._extract_with_patterns(field, text)
             if pattern_value:
                 value = pattern_value
-                confidence = 0.8  # High confidence for regex matches
-            
-            # Method 2: NLP entity recognition
+                confidence = 0.8
             if not value:
                 nlp_value = self._extract_with_nlp(field, doc)
                 if nlp_value:
                     value = nlp_value
-                    confidence = 0.7  # Medium-high confidence for NLP entities
-            
-            # Method 3: Context-based extraction
+                    confidence = 0.7
             if not value:
                 context_value = self._extract_with_context(field, doc)
                 if context_value:
                     value = context_value
-                    confidence = 0.6  # Medium confidence for contextual extraction
-            
-            # If a value was extracted, validate and normalize it
+                    confidence = 0.6
             if value:
                 try:
-                    # Handle special cases for amount (remove $ and commas)
                     if field == "amount" and isinstance(value, str):
                         value = value.replace("$", "").replace(",", "")
-                    
-                    # Try converting word numbers to digits if needed
                     if field in ["age", "amount", "tenure"] and isinstance(value, str):
                         try:
-                            # First check if it's already a number
                             float(value)
                         except ValueError:
-                            # If not, try word to number conversion
                             try:
                                 value = str(w2n.word_to_num(value))
                             except:
                                 pass
-                    
-                    # Normalize the value
                     normalized_value = self.normalizers[field](value)
-                    
-                    # Apply validation
                     if self.validators[field](normalized_value):
                         results[field] = (normalized_value, confidence)
                 except (ValueError, TypeError):
-                    # If normalization or validation fails, don't include this field
                     pass
-        
         return results

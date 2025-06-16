@@ -1,22 +1,22 @@
 
-from ValidationModels import LoanRequestValidator
+from .ValidationModels import LoanApplicationValidator
 
 
 class AgentPrompt:
-    def __init__(self, dto: LoanRequestValidator):
+    # def __init__(self, dto: LoanRequestValidator):
 
-        self.dto = dto 
-        self.prompt = f"""User Details:
-            - Marital Status: {self.dto.maritalStatus}
-            - Gender: {self.dto.gender}
-            - Location: {self.dto.state}, Nigeria
-            - Age: {self.dto.age}
-            - Loan Amount: {self.dto.loanAmount}
-            - Loan Tenure: {self.dto.tenorInDays} days.
+        # self.dto = dto 
+        # self.prompt = f"""User Details:
+        #     - Marital Status: {self.dto.maritalStatus}
+        #     - Gender: {self.dto.gender}
+        #     - Location: {self.dto.state}, Nigeria
+        #     - Age: {self.dto.age}
+        #     - Loan Amount: {self.dto.loanAmount}
+        #     - Loan Tenure: {self.dto.tenorInDays} days.
 
-            """
+        #     """
 
-    async def predictPrompt(self):
+    def repaymentProbabilityInstruction(self):
         """
         Predicts the loan repayment coefficient for an applicant
         using a fine-tuned OpenAI model.
@@ -40,26 +40,41 @@ class AgentPrompt:
             }
 
             """
+        return system_message
 
-        messages = [
-            {
-                "role": "system",
-                "content": system_message,
-            },
-            {
-                "role": "user",
-                "content": self.prompt
-            },
-            {
-                "role": "assistant",
-                "content": "Output is"
-            }
-        ]
+        # messages = [
+        #     {
+        #         "role": "system",
+        #         "content": system_message,
+        #     },
+        #     {
+        #         "role": "user",
+        #         "content": self.prompt
+        #     },
+        #     {
+        #         "role": "assistant",
+        #         "content": "Output is"
+        #     }
+        # ]
 
-        return messages
+    def userDataPrompt(self, dto: LoanApplicationValidator):
+        print('dto', dto)
+        user_prompt = f"""User Details:
+            - Marital Status: {dto.marital_status}
+            - Gender: {dto.gender}
+            - Location: {dto.location}, Nigeria
+            - Age: {dto.age}
+            - Loan Amount: {dto.amount}
+            - Loan Tenure: {dto.tenure} days.
+
+            Output is
+            """
+        print('user_prompt', user_prompt)
+
+        return user_prompt
 
 
-    async def _get_recommendation(self, score):
+    def _get_recommendation(self, score):
         system_message = """
             **Role**: Senior Loan Risk Analyst at a Tier-1 African Bank
 
