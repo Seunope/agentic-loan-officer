@@ -1,5 +1,6 @@
 from agents import Agent
-from ..utils.agent_prompt import AgentPrompt
+from src.models.validation_models import RepaymentPredictorSchema
+from src.utils.agent_prompt import AgentPrompt
 
 class RepaymentPredictorAgent:
     def __init__(self, model):
@@ -7,6 +8,7 @@ class RepaymentPredictorAgent:
         self.agent = Agent(
             name="Repayment Probability Agent",
             model=model,
+            output_type=RepaymentPredictorSchema,
             instructions=self.agent_prompt.repaymentProbabilityInstruction(),
             tools=[]
         )
