@@ -1,3 +1,15 @@
+---
+title: "Agentic Loan Officer"
+emoji: 💰
+colorFrom: blue
+colorTo: purple
+sdk: gradio
+sdk_version: "3.50.2"
+app_file: app.py
+pinned: false
+license: mit
+---
+
 # Agentic Loan Officer
 
 A multi-agent AI system for processing loan applications in Nigeria, featuring natural language processing, risk assessment, recommendation generation, and email communication. Built with Python, Gradio, and various AI and messaging APIs, it provides an interactive interface for users to apply for loans.
