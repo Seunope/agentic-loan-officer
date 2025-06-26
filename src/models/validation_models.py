@@ -14,3 +14,9 @@ class LoanApplicationValidator(BaseModel):
         if v > 1000000:
             raise ValueError('Loan amount cannot exceed 1,000,000')
         return v
+    
+
+
+class RepaymentPredictorSchema(BaseModel):
+    repaymentProbabilityScore: int
+    riskLevel: str

@@ -1,8 +1,8 @@
 # src/agents/coordinator.py
 from openai import AsyncOpenAI
-from ..utils.agent_prompt import AgentPrompt
-from ..utils.nl_extractor import ApplicationExtractor
-from ..models.validation_models import LoanApplicationValidator
+from src.utils.agent_prompt import AgentPrompt
+from src.utils.nl_extractor import ApplicationExtractor
+from src.models.validation_models import LoanApplicationValidator
 from agents import Agent, Runner, trace
 from pydantic import ValidationError
 from typing import Dict, Any

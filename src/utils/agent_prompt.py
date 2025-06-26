@@ -1,4 +1,4 @@
-from ..models.validation_models import LoanApplicationValidator
+from src.models.validation_models import LoanApplicationValidator
 
 class AgentPrompt:
     def repaymentProbabilityInstruction(self):

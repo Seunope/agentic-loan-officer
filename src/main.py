@@ -1,10 +1,10 @@
 import gradio as gr
 from dotenv import load_dotenv
 import os
-from .agents.coordinator import CoordinatorAgent
-from .agents.repayment_predictor import RepaymentPredictorAgent
-from .agents.recommendation import RecommendationAgent
-from .agents.emailer import EmailerAgent
+from src.agents.coordinator import CoordinatorAgent
+from src.agents.repayment_predictor import RepaymentPredictorAgent
+from src.agents.recommendation import RecommendationAgent
+from src.agents.emailer import EmailerAgent
 
 def main():
     load_dotenv(override=True)
