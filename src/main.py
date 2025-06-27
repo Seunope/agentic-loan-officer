@@ -8,7 +8,7 @@ from src.agents.emailer import EmailerAgent
 
 def main():
     load_dotenv(override=True)
-    
+
     openai_api_key = os.getenv('OPENAI_API_KEY')
     fine_tune_openai = os.getenv('FINE_TUNED_MODEL')
     google_api_key = os.getenv('GOOGLE_API_KEY')
@@ -18,12 +18,6 @@ def main():
     recommendation = RecommendationAgent()
     emailer = EmailerAgent(google_api_key, groq_api_key)
     coordinator = CoordinatorAgent(repayment_predictor, recommendation, emailer)
-
-    async def chat(message, history, session_state):
-        response, new_session_state = await coordinator.process(message, session_state)
-        history = history or []
-        history.append((message, response))
-        return "", history, new_session_state
 
     def update_status(session_state):
         if session_state is None:
@@ -41,10 +35,21 @@ def main():
                 session_state["required_fields"]
             )
 
+    async def chat(message, history, session_state):
+        response, new_session_state = await coordinator.process(message, session_state)
+        history = history or []
+        history.append((message, response))
+        status = update_status(new_session_state)
+        return "", history, new_session_state, status
+
+    def reset_app():
+        new_state = coordinator.initialize_session_state()
+        return "", new_state, update_status(new_state)
+
     with gr.Blocks() as demo:
         session_state = gr.State(coordinator.initialize_session_state())
-        gr.Markdown("#Loan Agentic Officer (trained on Nigeria Data)")
-        
+        gr.Markdown("# Loan Agentic Officer (trained on Nigeria Data)")
+
         with gr.Row():
             with gr.Column(scale=3):
                 chatbot = gr.Chatbot(height=500)
@@ -58,19 +63,16 @@ def main():
                     submit_btn = gr.Button("Submit")
             with gr.Column(scale=1):
                 app_status = gr.Markdown("### Application Status\nStart by providing your information")
-        
+
         with gr.Row():
             clear_btn = gr.Button("Start New Application")
 
-        submit_btn.click(chat, [msg, chatbot, session_state], [msg, chatbot, session_state])
-        msg.submit(chat, [msg, chatbot, session_state], [msg, chatbot, session_state])
-        session_state.change(update_status, session_state, app_status)
-        clear_btn.click(
-            lambda: (None, coordinator.initialize_session_state()),
-            None,
-            [chatbot, session_state],
-            queue=False
-        )
+        # Button and enter key trigger chat + update status
+        submit_btn.click(chat, [msg, chatbot, session_state], [msg, chatbot, session_state, app_status])
+        msg.submit(chat, [msg, chatbot, session_state], [msg, chatbot, session_state, app_status])
+
+        # Clear/reset everything
+        clear_btn.click(reset_app, None, [chatbot, session_state, app_status], queue=False)
 
         demo.launch()
 
