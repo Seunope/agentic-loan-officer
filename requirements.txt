@@ -1,6 +1,6 @@
 # requirements.txt generated from pyproject.toml
 anthropic>=0.49.0
-google-generativeai>=1.14.0
+google-generativeai>=0.8.0
 gradio>=5.22.0
 openai>=1.68.2
 openai-agents>=0.0.6
